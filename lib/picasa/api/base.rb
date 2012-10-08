@@ -1,7 +1,7 @@
 module Picasa
   module API
     class Base
-      attr_reader :user_id, :authorization_header
+      attr_reader :user_id, :access_token, :authorization_header
 
       # @param [Hash] credentials
       # @option credentials [String] :user_id google username/email
@@ -16,7 +16,11 @@ module Picasa
 
       def auth_header
         {}.tap do |header|
-          header["Authorization"] = authorization_header if authorization_header
+          unless access_token.nil?
+            header["Authorization"] = authorization_header if authorization_header
+          else
+            header["Authorization"] = "Bearer #{@access_token}" if @access_token
+          end
         end
       end
     end
